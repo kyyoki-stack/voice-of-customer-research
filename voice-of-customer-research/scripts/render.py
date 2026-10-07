@@ -38,7 +38,7 @@ def encode(value):
     return json.dumps(value, ensure_ascii=False).replace('<', '\\u003c').replace('\u2028', '\\u2028').replace('\u2029', '\\u2029')
 
 
-def render(project, title, output):
+def render(project, title, output, hero_title="用户怎么说？"):
     rows = csv_read(project / 'data/feedback.csv', REQUIRED)
     ids = set()
     related = set()
@@ -92,7 +92,7 @@ def render(project, title, output):
     summary = {'heading': summary_text[0].lstrip('# ').strip(), 'text': '\n'.join(summary_text[1:]).strip()}
     page = (SKILL / 'assets/template.html').read_text(encoding='utf-8')
     # One substitution pass: user text cannot inject another template token.
-    replacements = {'__REVIEW_DATA__': encode(rows), '__NEED_DATA__': encode(needs), '__AUDIT_DATA__': encode(audit), '__REPORT_DATA__': encode(reports), '__SUMMARY_DATA__': encode(summary), '__RESEARCH_TITLE__': html.escape(title)}
+    replacements = {'__REVIEW_DATA__': encode(rows), '__NEED_DATA__': encode(needs), '__AUDIT_DATA__': encode(audit), '__REPORT_DATA__': encode(reports), '__SUMMARY_DATA__': encode(summary), '__RESEARCH_TITLE__': html.escape(title), '__HERO_TITLE__': html.escape(hero_title)}
     page = re.sub('|'.join(map(re.escape, replacements)), lambda m: replacements[m.group()], page)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(page, encoding='utf-8')
@@ -104,6 +104,7 @@ def main():
     parser.add_argument('--project', type=Path, required=True)
     parser.add_argument('--title', required=True)
     parser.add_argument('--output', type=Path)
+    parser.add_argument('--hero-title', default='用户怎么说？', help='首页单行标题，可按研究产品定制')
     args = parser.parse_args()
     project = args.project.resolve()
     output = args.output.resolve() if args.output else project / 'research.html'
@@ -112,7 +113,7 @@ def main():
     if output.exists():
         parser.error('输出已存在；请选择新文件名，避免覆盖已有页面')
     try:
-        print(json.dumps(render(project, args.title, output), ensure_ascii=False))
+        print(json.dumps(render(project, args.title, output, args.hero_title), ensure_ascii=False))
     except (ValueError, OSError) as exc:
         parser.exit(1, f'生成失败：{exc}\n')
 
