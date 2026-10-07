@@ -1,0 +1,6 @@
+interface:
+  display_name: "用户之声研究"
+  short_description: "从真实评论生成需求洞察、MRD与交互式HTML"
+  default_prompt: "使用 $voice-of-customer-research 调研指定产品的真实用户之声，输出可追溯的原声、洞察、数据报告、MRD和HTML页面。"
+policy:
+  allow_implicit_invocation: true
