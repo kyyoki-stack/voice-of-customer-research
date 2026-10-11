@@ -81,6 +81,10 @@ def render(project, title, output, hero_title="用户怎么说？"):
         need['evidence_ids'] = ','.join(evidence)
     audit = csv_read(project / 'data/source_audit.csv', {'source_id', 'url', 'status', 'decision', 'sample_ids'})
     for source in audit:
+        samples = [x.strip() for x in source['sample_ids'].split(',') if x.strip()]
+        if set(samples) - ids:
+            raise ValueError(f"{source['source_id']}: 来源审核引用不存在的记录")
+        source['sample_ids'] = ','.join(samples)
         if source['url']:
             safe_url(source['url'])
         else:

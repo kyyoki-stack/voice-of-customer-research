@@ -15,6 +15,6 @@ UTF-8 CSV，记录编号唯一，空值表示未知。`data/feedback.csv`必须�
 `data/needs.csv`列：`need_id,priority,need,theme_id,evidence_ids,reason,decision_type,insight,suggested_action,validation,confidence`。
 `evidence_ids`为英文逗号分隔的相关记录ID，不能为空；priority仅P0/P1/P2。无证据的机会假设放报告待验证章节，不展示为证据支持的需求卡。
 
-`data/source_audit.csv`列：`source_id,url,status,decision,sample_ids`。记录来源失败，不凭空计入采集样本。
+`data/source_audit.csv`列：`source_id,url,status,decision,sample_ids`。记录来源失败，不凭空计入采集样本。`sample_ids`为空或英文逗号分隔的已采集记录ID；可关联被排除的记录用于审核，但不能引用不存在的记录。
 
 人工/AI审阅需检查：主题是否准确、好评差评是否依据该条原声、任务影响是否超出原话、引文是否吻合、版本未知是否保持未知。完全重复与语义重复分别处理，注明删选规则；批次标注方法、模型/执行日期和人工修正写入数据报告。
